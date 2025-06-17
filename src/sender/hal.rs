@@ -9,7 +9,7 @@ pub struct Sender<PwmPin, const FREQ: u32, const BUFSIZE: usize> {
     buffer: PulsedataSender<BUFSIZE>,
 }
 
-impl<PwmPin, PwmDuty, const F: u32, const S: usize> Sender<PwmPin, F, S>
+impl<PwmPin, const F: u32, const S: usize> Sender<PwmPin, F, S>
 where
     PwmPin: embedded_hal::pwm::SetDutyCycle,
 {
@@ -41,10 +41,11 @@ where
         self.counter = self.counter.wrapping_add(1);
 
         match status {
-            Status::Transmit(true) => self.pin.enable(),
-            Status::Transmit(false) => self.pin.disable(),
-            Status::Idle => self.pin.disable(),
-            Status::Error => self.pin.disable(),
-        };
+            Status::Transmit(true) => self.pin.set_duty_cycle_percent(50),
+            Status::Transmit(false) => self.pin.set_duty_cycle_fully_off(),
+            Status::Idle => self.pin.set_duty_cycle_fully_off(),
+            Status::Error => self.pin.set_duty_cycle_fully_off(),
+        }
+        .unwrap();
     }
 }

@@ -3,9 +3,11 @@
 use crate::protocol::Protocol;
 
 mod buffer;
+mod hal;
 mod senders;
 
 pub use buffer::*;
+pub use hal::*;
 pub use senders::*;
 
 pub trait ProtocolEncoder<const FREQ: u32>: Protocol {
